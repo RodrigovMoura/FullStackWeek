@@ -1,3 +1,11 @@
+"use client";
+
+import TripSearch from "./components/TripSearch";
+
 export default function Home() {
-  return <div>Home here</div>;
+  return (
+    <div className=''>
+      <TripSearch />
+    </div>
+  );
 }
