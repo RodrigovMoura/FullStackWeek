@@ -43,16 +43,15 @@ const TripReservation = ({ trip }: TripReservationProps) => {
 
     if (res?.error?.code === "TRIP_ALREADY_RESERVED") {
       setError("startDate", { message: "Esta data já está reservada.", type: "manual" });
-      setError("endDate", { message: "Esta data já está reservada.", type: "manual" });
+      return setError("endDate", { message: "Esta data já está reservada.", type: "manual" });
     }
 
     if (res?.error?.code === "INVALID_START_DATE") {
-      setError("startDate", { message: "Data inválida.", type: "manual" });
-      setError("endDate", { message: "Data inválida.", type: "manual" });
+      return setError("startDate", { message: "Data inválida.", type: "manual" });
     }
 
     if (res?.error?.code === "INVALID_END_DATE") {
-      setError("endDate", { message: "Data inválida.", type: "manual" });
+      return setError("endDate", { message: "Data inválida.", type: "manual" });
     }
   };
 
@@ -114,11 +113,16 @@ const TripReservation = ({ trip }: TripReservationProps) => {
             value: true,
             message: "Campo obrigatório",
           },
+          max: {
+            value: trip.maxGuests,
+            message: `O número máximo de hóspedes não pode ser maior que ${trip.maxGuests}.`,
+          },
         })}
         placeholder={`Numero de hóspedes (Max: ${trip.maxGuests})`}
         className='mt-4'
         error={!!errors?.guests}
         errorMessage={errors?.guests?.message}
+        type='number'
       />
 
       <div className='flex justify-between mt-3'>
