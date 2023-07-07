@@ -10,13 +10,16 @@ import { ptBR } from "date-fns/locale";
 import Button from "@/components/Button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const [trip, setTrip] = useState({} as Trip);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const { status } = useSession();
+  const { status, data } = useSession();
   const router = useRouter();
+
+  console.log(data);
 
   const searchParams = useSearchParams();
 
@@ -51,6 +54,29 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const endDate = new Date(searchParams.get("endDate") as string);
   const guests = Number(searchParams.get("guests"));
 
+  const handleBuyClick = async () => {
+    const res = await fetch(`http://localhost:3000/api/trips/reservation`, {
+      method: "POST",
+      body: Buffer.from(
+        JSON.stringify({
+          tripId: params.tripId,
+          startDate: searchParams.get("startDate"),
+          endDate: searchParams.get("endDate"),
+          guests: Number(searchParams.get("guests")),
+          userId: (data?.user as any).id!,
+          totalPaid: totalPrice,
+        })
+      ),
+    });
+
+    if (!res.ok) {
+      toast.error("Erro ao realizar reserva!", { position: "bottom-center" });
+      return;
+    }
+    router.push("/");
+    toast.success("Reserva realizada com sucesso!", { position: "bottom-center" });
+  };
+
   return (
     <div className='container mx-auto p-5'>
       <h1 className='font-semibold text-xl text-primaryDarker'>Sua viagem</h1>
@@ -59,7 +85,13 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
       <div className='flex flex-col p-5 mt-5 border-grayLighter border-solid border shadow-lg rounded-lg'>
         <div className='flex items-center gap-3 pb-5 border-b border-grayLighter border-solid'>
           <div className='relative h-[106px] w-[124px]'>
-            <Image src={trip?.coverImage} fill style={{ objectFit: "cover" }} alt={trip.name} className='rounded-lg' />
+            <Image
+              src={trip?.coverImage}
+              fill
+              style={{ objectFit: "cover" }}
+              alt='Image representando destino escolhido'
+              className='rounded-lg'
+            />
           </div>
 
           <div className='flex flex-col'>
@@ -90,7 +122,9 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
         <h3 className='font-semibold mt-5'>Hóspedes</h3>
         <p>{guests} hóspedes</p>
 
-        <Button className='mt-5'>Confirmar compra</Button>
+        <Button className='mt-5' onClick={handleBuyClick}>
+          Confirmar compra
+        </Button>
       </div>
     </div>
   );
