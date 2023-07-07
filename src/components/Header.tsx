@@ -46,7 +46,7 @@ const Header = () => {
           />
           {menuIsOpen && (
             <div className='z-50 absolute top-14 left-0  w-full h-[100px] bg-white rounded-lg shadow-md flex flex-col justify-center - items-center'>
-              <Link href='/my-trips'>
+              <Link href='/my-trips' onClick={() => setMenuIsOpen(false)}>
                 <button className='text-primary text-sm font-semibold pb-2 border-b border-grayLighter border-solid'>
                   Minhas viagens
                 </button>
