@@ -16,9 +16,7 @@ const Header = () => {
     signOut();
   };
 
-  const handleMyTripsClick = () => {
-    setMenuIsOpen(!menuIsOpen);
-  };
+  const handleMyTripsClick = () => setMenuIsOpen(!menuIsOpen);
 
   const handleMenuClick = () => setMenuIsOpen(!menuIsOpen);
 
