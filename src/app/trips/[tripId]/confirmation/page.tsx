@@ -20,8 +20,6 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const { status, data } = useSession();
   const router = useRouter();
 
-  console.log(data);
-
   const searchParams = useSearchParams();
 
   useEffect(() => {
