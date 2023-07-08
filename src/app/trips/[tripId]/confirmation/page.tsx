@@ -11,6 +11,7 @@ import Button from "@/components/Button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { loadStripe } from "@stripe/stripe-js";
 
 const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const [trip, setTrip] = useState({} as Trip);
@@ -55,7 +56,7 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const guests = Number(searchParams.get("guests"));
 
   const handleBuyClick = async () => {
-    const res = await fetch(`http://localhost:3000/api/trips/reservation`, {
+    const res = await fetch(`http://localhost:3000/api/payment`, {
       method: "POST",
       body: Buffer.from(
         JSON.stringify({
@@ -63,8 +64,10 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
           startDate: searchParams.get("startDate"),
           endDate: searchParams.get("endDate"),
           guests: Number(searchParams.get("guests")),
-          userId: (data?.user as any).id!,
-          totalPaid: totalPrice,
+          totalPrice,
+          coverImage: trip.coverImage,
+          name: trip.name,
+          description: trip.description,
         })
       ),
     });
@@ -73,7 +76,16 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
       toast.error("Erro ao realizar reserva!", { position: "bottom-center" });
       return;
     }
-    router.push("/");
+
+    const { sessionId } = await res.json();
+    if (!sessionId) throw new Error("No session id found");
+
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY as string);
+
+    await stripe?.redirectToCheckout({
+      sessionId,
+    });
+
     toast.success("Reserva realizada com sucesso!", { position: "bottom-center" });
   };
 
