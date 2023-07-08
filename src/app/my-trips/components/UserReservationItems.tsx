@@ -21,7 +21,7 @@ const UserReservationItems = ({ reservation, fetchReservations }: UserReservatio
   const router = useRouter();
 
   const handleDeleteReservation = async () => {
-    const res = await fetch(`http://localhost:3000/api/trips/reservation/${reservation.id}`, {
+    const res = await fetch(`/api/trips/reservation/${reservation.id}`, {
       method: "DELETE",
     });
 
