@@ -20,6 +20,7 @@ const MyTrips = () => {
   const fetchReservations = async () => {
     const response = await fetch(`/api/user/${(data?.user as any)?.id}/reservations`);
     const json = await response.json();
+
     setReservations(json);
   };
 
@@ -31,11 +32,18 @@ const MyTrips = () => {
 
   return (
     <div className='container mx-auto p-5'>
-      <h1 className='font-semibold text-primaryDarker text-xl'> Minhas viagens</h1>
+      <h1 className='font-semibold text-primaryDarker text-[2.5rem] lg:mb-4'> Minhas viagens</h1>
+
       {reservations.length > 0 ? (
-        reservations.map((reservation) => (
-          <UserReservationItems key={reservation.id} reservation={reservation} fetchReservations={fetchReservations} />
-        ))
+        <div className='flex flex-col lg:grid lg:grid-cols-4 lg:gap-16'>
+          {reservations.map((reservation) => (
+            <UserReservationItems
+              key={reservation.id}
+              reservation={reservation}
+              fetchReservations={fetchReservations}
+            />
+          ))}
+        </div>
       ) : (
         <div className='flex flex-col'>
           <p className='font-medium mt-2 text-primaryDarker'>Você ainda não tem nenhuma reserva :(</p>
