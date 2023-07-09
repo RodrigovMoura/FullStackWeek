@@ -88,7 +88,7 @@ const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   };
 
   return (
-    <div className='container mx-auto p-5'>
+    <div className='container mx-auto p-5 lg:max-w-[600px]'>
       <h1 className='font-semibold text-xl text-primaryDarker'>Sua viagem</h1>
 
       {/* card */}
